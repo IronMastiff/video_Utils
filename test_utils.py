@@ -1,6 +1,5 @@
 import cv2
 import math
-import os
 import threading
 import time
 import os
@@ -83,6 +82,7 @@ class test_utils( object ):
             cap = cv2.VideoCapture( cam_num )
             cap.set( cv2.CAP_PROP_EXPOSURE, exposure )
 
+            fourcc = cv2.VideoWriter_fourcc( *'XVID' )
             writer = cv2.VideoWriter()
             w = ( int )( cap.get( cv2.CAP_PROP_FRAME_WIDTH ) )
             h = ( int )( cap.get( cv2.CAP_PROP_FRAME_HEIGHT ) )
@@ -91,15 +91,15 @@ class test_utils( object ):
             if save:
                 if not os.path.exists( './save' ):
                     os.mkdir( './save' )
-                writer.open( './save/' + name + str( cam_num ) + '.avi', -1, 60, S, True )
+                writer.open( './save/' + name + str( cam_num + 1 ) + '.avi', fourcc, 60, S, False )
 
             while ( cv2.waitKey( 30 ) != 27 ):
                 ret, frame = cap.read()
                 if not ret:
-                    print( str( cam_num ) + '号视频信号丢失' )
+                    print( str( cam_num + 1 ) + '号视频信号丢失' )
                     break
-                cv2.imshow( "capture" + str( cam_num ), frame )
                 save_video( save, writer, frame )
+                cv2.imshow( "capture" + str( cam_num + 1 ), frame )
                 if cv2.waitKey( 1 ) & 0xFF == ord( 'q' ):
                     break
             cap.release()
@@ -108,7 +108,7 @@ class test_utils( object ):
 
 
         for i in range( cam_sum ):
-            thread = threading.Thread( target = catch_video, args = (i,) )
+            thread = threading.Thread( target = catch_video, args = ( i, ) )
             thread.start()
 
 
