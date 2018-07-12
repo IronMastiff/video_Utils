@@ -6,7 +6,13 @@ import os
 
 class test_utils( object ):
 
-    def thres_segment( self, filename ):
+    def thres_segment( self, filename, mask = 0 ):
+        '''
+
+        :param filename: input filename
+        :param mask: the mask to select the bdbox bigger than the mask
+        :return: None
+        '''
         def nothing(x):
             pass
 
@@ -33,6 +39,14 @@ class test_utils( object ):
             droplet_upper = (H_max, S_max, V_max)  # hue, sat, value
             bound_drop = [droplet_lower, droplet_upper]
             out = cv2.inRange(hsv, droplet_lower, droplet_upper)
+
+            '''--------new--------'''
+            retval, contours, hierarchy = cv2.findContours( out, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE )
+            for contour in contours:
+                x, y, w, h = cv2.boundingRect( contour )
+                if ( ( w * h ) > mask ):
+                    cv2.rectangle( out, ( x, y ), ( x + w, y + h ), ( 200, 0, 200 ), 2 )
+
             cv2.imshow('out',out)
             if cv2.waitKey(1) == ord('q'):
                 break
@@ -65,9 +79,9 @@ class test_utils( object ):
                 count += 1
                 print(count)
 
-    def batch_video_catch( self, cam_sum, save, name, exposure ):
+    def batch_video_catch( self, cam_sum, save = False, name = '', exposure = -5 ):
         '''
-
+        To show the vedio
         :param cam_sum: the num of the cam
         :param save: save or not save video 0 or 1
         :param name: the name of the video if not save please send ''
@@ -120,4 +134,5 @@ class test_utils( object ):
 
 if __name__ == "__main__":
     utils = test_utils()
-    utils.batch_video_catch( 3, 1, 'fuck', -5 )
+    # utils.batch_video_catch( 3, 1, 'fuck', -5 )
+    utils.thres_segment( '1.jpg', 9999 )
