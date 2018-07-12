@@ -83,15 +83,14 @@ class test_utils( object ):
             cap.set( cv2.CAP_PROP_EXPOSURE, exposure )
 
             fourcc = cv2.VideoWriter_fourcc( *'XVID' )
-            writer = cv2.VideoWriter()
+            # writer = cv2.VideoWriter()
             w = ( int )( cap.get( cv2.CAP_PROP_FRAME_WIDTH ) )
             h = ( int )( cap.get( cv2.CAP_PROP_FRAME_HEIGHT ) )
             S = ( w, h )
             r = cap.get( cv2.CAP_PROP_FPS )
-            if save:
-                if not os.path.exists( './save' ):
-                    os.mkdir( './save' )
-                writer.open( './save/' + name + str( cam_num + 1 ) + '.avi', fourcc, 60, S, False )
+            writer = cv2.VideoWriter( './save/' + name + str( cam_num + 1 ) + '.avi', fourcc, 60, S )
+            if not os.path.exists( './save' ):
+                os.mkdir( './save' )
 
             while ( cv2.waitKey( 30 ) != 27 ):
                 ret, frame = cap.read()
