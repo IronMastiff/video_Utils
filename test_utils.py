@@ -132,8 +132,15 @@ class test_utils( object ):
         else:
             print( 'no img' )
 
-    def video_horizontal_overturn( self, video ):
+    def video_horizontal_overturn( self, video, exposure ):
+        '''
+
+        :param video: Video dri
+        :param exposure: Just exposure
+        :return: None
+        '''
         cap = cv2.VideoCapture( video )
+        cap.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
         while( cv2.waitKey( 39 ) != 27 ):
             ret, frame = cap.read()
@@ -162,4 +169,4 @@ if __name__ == "__main__":
     utils = test_utils()
     # utils.batch_video_catch( 3, 1, 'fuck', -5 )
     # utils.thres_segment( '1.jpg', 9999 )
-    utils.video_horizontal_overturn( 0 )
+    utils.video_horizontal_overturn( 0, 10 )
