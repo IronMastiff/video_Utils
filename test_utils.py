@@ -3,6 +3,7 @@ import math
 import threading
 import time
 import os
+import numpy as np
 
 class test_utils( object ):
 
@@ -131,8 +132,34 @@ class test_utils( object ):
         else:
             print( 'no img' )
 
+    def video_horizontal_overturn( self, video ):
+        cap = cv2.VideoCapture( video )
+
+        while( cv2.waitKey( 39 ) != 27 ):
+            ret, frame = cap.read()
+            if not ret:
+                print( str( video ) + '号视频丢失' )
+                break
+            shape = frame.shape
+            new_frame = np.array(frame)
+            width = frame.shape[1]
+            height = frame.shape[0]
+            channel = frame.shape[2]
+
+            for i in range(height):
+                for ii in range(width):
+                    new_frame[i, width - ii - 1] = frame[i, ii]
+
+            cv2.imshow( "capture" + str( video + 1 ), new_frame )
+            if cv2.waitKey( 1 ) & 0xFF == ord( 'q' ):
+                break
+        cap.release()
+        cv2.destroyAllWindows()
+
+
 
 if __name__ == "__main__":
     utils = test_utils()
     # utils.batch_video_catch( 3, 1, 'fuck', -5 )
-    utils.thres_segment( '1.jpg', 9999 )
+    # utils.thres_segment( '1.jpg', 9999 )
+    utils.video_horizontal_overturn( 0 )
